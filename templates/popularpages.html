@@ -1,0 +1,6 @@
+<!doctype html>
+<title>Popular pages</title>
+<h1>Top {{num}} Popular pages for date {{date}}</h1>
+{% for page in popularpages %}
+  <p>{{page._id}} {{page.totalviews}}</p>
+{% endfor %}
