@@ -7,10 +7,15 @@ Designed for Woven technology as Web Traffic API
 There are 6 collections in the database:
 
 websitestats
+
 userstats
+
 pagestats
+
 refstats
+
 userwebsitestats
+
 traffic
 
 3 key files:
