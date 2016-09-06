@@ -1,7 +1,7 @@
 # Python_API
 Python API using Flask and MongoDB
 
-Designed for Woven technology as Web Traffic API
+Designed for Wv tech as Web Traffic API
 ================================================
 
 There are 6 collections in the database:
