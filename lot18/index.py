@@ -174,7 +174,7 @@ if __name__ == '__main__':
     elif option == 2:
 
         #################################################
-        # Create 2 Unit Testcases and put into Test Suite
+        # Create Unit Testcase and put into Test Suite
         #################################################
         import unittest
 
