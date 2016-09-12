@@ -1,9 +1,0 @@
-<!doctype html>
-<title>users are visiting multiple websites</title>
-<h1>Users visited multiple websites and what are they reading</h1>
-{% for user in users %}
-  {{user}}
-  {% for page in user.pages %}
-    {{page}}
-  {% endfor %}
-{% endfor %}
