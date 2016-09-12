@@ -8,11 +8,9 @@ import json
 
 class MockWineStore:
 
-    config_file = 'config.ini'
-
-    def __init__(self):
+    def __init__(self, config_file):
         parser = SafeConfigParser()
-        parser.read(MockWineStore.config_file)
+        parser.read(config_file)
         self.not_allowed_states = parser.get('states', 'notAllowedStates').split(', ')
         self.filename = parser.get('files', 'orders')
         self.orders = []
@@ -71,7 +69,7 @@ class MockWineStore:
         state = order[self.column_dic['state']]
         zipcode = order[self.column_dic['zipcode']]
         birthday = order[self.column_dic['birthday']]
-	valid = False
+        valid = False
         z_sum = 0
 
         if last_order and last_order[0]==state and last_order[1]==zipcode:
@@ -145,23 +143,83 @@ class MockWineStore:
 
         return output
 
-app = Flask(__name__)
-mws = MockWineStore()
-
-@app.route('/orders/import')
-def import_orders():
-    orders = mws.import_orders()
-    return "Imported."
-
-@app.route('/orders')
-def get_orders():
-    return jsonify({"results": mws.orders})
-
-@app.route('/orders/<int:id>')
-def get_order(id):
-    order = mws.get_order(id)
-    return jsonify(order)
+##########################
+# Program main entrance
+##########################
 
 if __name__ == '__main__':
-    app.run()
+
+    print "\nHi, welcome to Mock Wine Store\n"
+    option = input("1. Start up server\n2.Test the app\n")
+
+    if option == 1:
+        app = Flask(__name__)
+        mws = MockWineStore('config.ini')
+
+        @app.route('/orders/import')
+        def import_orders():
+            orders = mws.import_orders()
+            return "Imported."
+
+        @app.route('/orders')
+        def get_orders():
+            return jsonify({"results": mws.orders})
+
+        @app.route('/orders/<int:id>')
+        def get_order(id):
+            order = mws.get_order(id)
+            return jsonify(order)
+
+        app.run()
+    elif option == 2:
+
+        #################################################
+        # Create 2 Unit Testcases and put into Test Suite
+        #################################################
+        import unittest
+
+        class Testcase_1(unittest.TestCase):
+            def setUp(self):
+                self.mock_wine_store = MockWineStore('config.ini')
+                print '\nTest: mock_wine_store.import_orders'
+                self.mock_wine_store.import_orders()
+                print 'Orders added.'
+
+            def test_get_order_1(self):
+                order_id = 3078
+                result = {
+  "birthday": "Aug 24", 
+  "errors": [
+    {
+      "message": "Your email is illegal", 
+      "rule": "EmailFormat"
+    }, 
+    {
+      "message": "Your zipcode sum is too large", 
+      "rule": "ZipCodeSum"
+    }
+  ], 
+  "name": "Ezra Abbott", 
+  "order_id": "3078", 
+  "state": "CA", 
+  "valid": False, 
+  "zipcode": "37908"
+}
+
+                print '\nTest: mock_wine_store.get_order'
+                print 'Input: order_id=%d' % (order_id)
+                print 'Output: %s\n' % (result,)
+
+                self.assertEqual(self.mock_wine_store.get_order(order_id), result)
+
+        """
+            Gather all the tests from this module in a test suite.
+        """
+        test_suite = unittest.TestSuite()
+        test_suite.addTest(unittest.makeSuite(Testcase_1))
+        runner = unittest.TextTestRunner()
+        runner.run(test_suite)
+
+
+
 
